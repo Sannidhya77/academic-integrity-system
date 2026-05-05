@@ -1,0 +1,5 @@
+Cloud computing is a technology that enables users to access computing resources over the internet.
+
+It provides scalability and allows organizations to operate without investing heavily in physical infrastructure.
+
+Cloud platforms such as AWS, Azure, and Google Cloud are widely used.

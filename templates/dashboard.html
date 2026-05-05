@@ -1,0 +1,156 @@
+{% extends "base_app.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 class="app-page-title">Dashboard</h1>
+<p class="app-page-sub">Manage your dataset, run checks, and review activity at a glance.</p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="mb-4">
+{% for category, message in messages %}
+<div class="alert alert-{{ category }} app-alert alert-dismissible fade show" role="alert">
+{{ message }}
+<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="row g-4 mb-2">
+<div class="col-sm-6 col-xl-3">
+<div class="app-card app-stat-card h-100">
+<div class="app-stat-icon text-primary bg-primary bg-opacity-10">
+<i class="bi bi-folder2-open"></i>
+</div>
+<div class="app-stat-label">Total files</div>
+<div class="app-stat-value">{{ db_total }}</div>
+<p class="text-muted small mb-0 mt-1">In database</p>
+</div>
+</div>
+<div class="col-sm-6 col-xl-3">
+<div class="app-card app-stat-card h-100">
+<div class="app-stat-icon text-info bg-info bg-opacity-10">
+<i class="bi bi-upload"></i>
+</div>
+<div class="app-stat-label">Recent uploads</div>
+<div class="app-stat-value">{{ recent_week_count }}</div>
+<p class="text-muted small mb-0 mt-1">Last 7 days</p>
+</div>
+</div>
+<div class="col-sm-6 col-xl-3">
+<div class="app-card app-stat-card h-100">
+<div class="app-stat-icon text-danger bg-danger bg-opacity-10">
+<i class="bi bi-exclamation-octagon"></i>
+</div>
+<div class="app-stat-label">Plagiarism cases</div>
+<div class="app-stat-value text-danger">{{ stats.plagiarism }}</div>
+<p class="text-muted small mb-0 mt-1">Session counter</p>
+</div>
+</div>
+<div class="col-sm-6 col-xl-3">
+<div class="app-card app-stat-card h-100">
+<div class="app-stat-icon text-success bg-success bg-opacity-10">
+<i class="bi bi-check2-circle"></i>
+</div>
+<div class="app-stat-label">Checks run</div>
+<div class="app-stat-value text-success">{{ stats.checked }}</div>
+<p class="text-muted small mb-0 mt-1">This session</p>
+</div>
+</div>
+</div>
+
+<div class="row g-4">
+<div class="col-12 col-xl-7">
+<div class="app-card app-card-pad h-100">
+<div class="d-flex align-items-center justify-content-between mb-3">
+<h2 class="h5 fw-bold mb-0"><i class="bi bi-lightning-charge-fill text-warning me-2"></i>Recent activity</h2>
+<span class="badge rounded-pill text-bg-light border">Latest {{ recent_activity|length }}</span>
+</div>
+{% if recent_activity %}
+<div class="table-responsive">
+<table class="table app-table table-sm align-middle mb-0">
+<thead>
+<tr>
+<th scope="col">File</th>
+<th scope="col" class="text-end">Stored</th>
+</tr>
+</thead>
+<tbody>
+{% for row in recent_activity %}
+<tr>
+<td class="fw-medium text-truncate" style="max-width: 14rem;">{{ row.filename }}</td>
+<td class="text-muted small text-end text-nowrap">{{ row.timestamp }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted small mb-0"><i class="bi bi-info-circle me-1"></i>No files stored yet. Use Upload to add documents.</p>
+{% endif %}
+</div>
+</div>
+
+<div class="col-12 col-xl-5">
+<div class="app-card app-card-pad h-100">
+<h2 class="h5 fw-bold mb-3"><i class="bi bi-speedometer2 text-primary me-2"></i>Session overview</h2>
+<ul class="list-unstyled mb-0 small text-muted">
+<li class="d-flex justify-content-between py-2 border-bottom border-light-subtle">
+<span>Submissions recorded (session)</span>
+<span class="fw-semibold text-dark">{{ stats.submissions }}</span>
+</li>
+<li class="d-flex justify-content-between py-2 border-bottom border-light-subtle">
+<span>Dataset on disk</span>
+<span class="fw-semibold text-dark">{% if config.STORE_UPLOAD_FILES %}Enabled{% else %}DB only{% endif %}</span>
+</li>
+<li class="d-flex justify-content-between py-2">
+<span>Quick link — last report</span>
+<a href="{{ url_for('results') }}" class="fw-semibold">Open results</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<section id="upload" class="mt-5 pt-2">
+<h2 class="h4 fw-bold mb-1">Upload</h2>
+<p class="app-page-sub mt-0 mb-4">Bulk-add reference files or run a single plagiarism check.</p>
+<div class="row g-4">
+<div class="col-lg-6">
+<div class="app-card app-card-pad h-100" id="dataset">
+<h3 class="h5 fw-bold mb-1">Build dataset</h3>
+<p class="text-muted small mb-4">
+Add one or more files at once. Stored in the database
+{% if config.STORE_UPLOAD_FILES %}
+and under <code class="px-1 rounded bg-light">uploads/</code>
+{% endif %}
+— no similarity scan.
+</p>
+<form action="{{ url_for('dataset_upload') }}" method="post" enctype="multipart/form-data">
+<label class="form-label small fw-semibold text-muted">Files to add</label>
+<input type="file" name="files" class="form-control app-form-control" multiple required>
+<button type="submit" class="btn btn-app-outline w-100 mt-3">
+<i class="bi bi-stack me-2"></i>Add to dataset
+</button>
+</form>
+</div>
+</div>
+<div class="col-lg-6">
+<div class="app-card app-card-pad h-100" id="check">
+<h3 class="h5 fw-bold mb-1">Check plagiarism</h3>
+<p class="text-muted small mb-4">
+Upload one file to compare against everything already stored (top 5 matches). The file is then added to the dataset.
+</p>
+<form action="{{ url_for('compare') }}" method="post" enctype="multipart/form-data">
+<label class="form-label small fw-semibold text-muted">File to check</label>
+<input type="file" name="file" class="form-control app-form-control" required>
+<button type="submit" class="btn btn-app-primary w-100 mt-3">
+<i class="bi bi-search me-2"></i>Run similarity check
+</button>
+</form>
+</div>
+</div>
+</div>
+</section>
+{% endblock %}

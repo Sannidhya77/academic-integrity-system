@@ -1,0 +1,5 @@
+Cloud computing allows users to access computing resources through the internet instead of relying on local systems.
+
+It helps organizations scale easily without investing in expensive hardware. This technology offers flexibility and cost savings.
+
+Popular platforms include AWS, Azure, and Google Cloud.

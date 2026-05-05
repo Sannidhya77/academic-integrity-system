@@ -1,0 +1,27 @@
+{% extends "base_app.html" %}
+{% block title %}Results{% endblock %}
+{% block content %}
+<h1 class="app-page-title">Results</h1>
+<p class="app-page-sub">Review your most recent plagiarism and AI analysis. Run a new check from the dashboard to refresh.</p>
+
+{% if report %}
+{% with uploaded_filename=report.uploaded_filename, matches=report.matches, risk=report.risk, color=report.color, ai_probability=report.ai_probability %}
+{% include "partials/report_body.html" %}
+{% endwith %}
+<div class="d-flex flex-wrap gap-2 mt-4">
+<a href="{{ url_for('dashboard') }}#check" class="btn btn-app-primary"><i class="bi bi-arrow-repeat me-2"></i>New check</a>
+<a href="{{ url_for('dashboard') }}" class="btn btn-app-outline">Dashboard</a>
+</div>
+{% else %}
+<div class="app-card app-card-pad text-center py-5">
+<div class="app-stat-icon text-primary bg-primary bg-opacity-10 mx-auto">
+<i class="bi bi-graph-up-arrow"></i>
+</div>
+<h2 class="h4 fw-bold">No report yet</h2>
+<p class="text-muted mx-auto mb-4" style="max-width: 420px;">
+Run a similarity check from Upload to generate a report. Results from your last check will appear here automatically.
+</p>
+<a href="{{ url_for('dashboard') }}#check" class="btn btn-app-primary"><i class="bi bi-play-fill me-2"></i>Run a check</a>
+</div>
+{% endif %}
+{% endblock %}

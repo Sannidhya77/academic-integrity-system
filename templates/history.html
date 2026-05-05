@@ -1,0 +1,45 @@
+{% extends "base_app.html" %}
+{% block title %}History{% endblock %}
+{% block content %}
+<h1 class="app-page-title">History</h1>
+<p class="app-page-sub">All files stored in your database, newest first.</p>
+
+<div class="app-card overflow-hidden">
+<div class="app-card-pad border-bottom bg-white bg-opacity-50">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+<h2 class="h6 fw-bold mb-0"><i class="bi bi-archive me-2 text-primary"></i>Submission log</h2>
+<span class="badge rounded-pill text-bg-light border">{{ rows|length }} shown</span>
+</div>
+</div>
+<div class="table-responsive">
+{% if rows %}
+<table class="table app-table table-hover align-middle mb-0">
+<thead class="table-light">
+<tr>
+<th scope="col" style="width:4rem">ID</th>
+<th scope="col">Filename</th>
+<th scope="col" class="text-end">Timestamp</th>
+</tr>
+</thead>
+<tbody>
+{% for row in rows %}
+<tr>
+<td class="text-muted small">#{{ row.id }}</td>
+<td class="fw-medium">{{ row.filename }}</td>
+<td class="text-muted small text-end text-nowrap">{{ row.timestamp }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% else %}
+<div class="app-card-pad text-muted">
+<i class="bi bi-inbox me-2"></i>No submissions yet. Add files from the dashboard.
+</div>
+{% endif %}
+</div>
+</div>
+
+<div class="mt-4">
+<a href="{{ url_for('dashboard') }}" class="btn btn-app-outline"><i class="bi bi-arrow-left me-2"></i>Back to dashboard</a>
+</div>
+{% endblock %}

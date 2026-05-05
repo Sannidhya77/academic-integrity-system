@@ -1,0 +1,5 @@
+Computer networks connect multiple devices to share resources and information.
+
+They can be classified into LAN, WAN, and MAN based on their size. Networking enables communication between systems using protocols.
+
+The internet is the largest example of a global network.

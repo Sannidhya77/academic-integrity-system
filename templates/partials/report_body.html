@@ -1,0 +1,99 @@
+<div class="app-card app-card-pad mb-4">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+<div>
+<p class="text-muted small mb-1">Uploaded file</p>
+<p class="mb-0 fw-semibold fs-5">{{ uploaded_filename }}</p>
+</div>
+<div class="d-flex flex-wrap align-items-center gap-2">
+<span class="badge badge-risk {% if color == 'success' %}text-bg-success{% elif color == 'warning' %}text-bg-warning{% elif color == 'danger' %}text-bg-danger{% else %}text-bg-secondary{% endif %}">
+<i class="bi bi-flag-fill me-1"></i>{{ risk }}
+</span>
+{% if matches %}
+{% set m0 = matches[0] %}
+{% set peak = m0.text_score if m0.text_score > m0.code_score else m0.code_score %}
+<span class="badge text-bg-dark bg-opacity-25 text-dark border" style="--bs-bg-opacity: .08;">
+Top match {{ peak }}%
+</span>
+{% endif %}
+</div>
+</div>
+<p class="text-muted small mb-0">
+Strongest database similarity among the top five matches below. Plagiarism labels are based on the same thresholds as before.
+</p>
+</div>
+
+<div class="app-card ai-meter-card app-card-pad mb-4 {% if ai_probability < 30 %}ai-meter-low{% elif ai_probability < 60 %}ai-meter-mid{% else %}ai-meter-high{% endif %}">
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+<div>
+<h2 class="h5 fw-bold mb-1 d-flex align-items-center gap-2">
+<i class="bi bi-robot"></i>
+AI-generated probability
+</h2>
+<p class="text-muted small mb-0">
+Heuristic from sentence length variation, vocabulary diversity, and repetition — not a verified classifier.
+</p>
+</div>
+<div class="text-end">
+<span class="d-inline-flex align-items-center gap-2 rounded-pill px-3 py-2 small fw-semibold
+{% if ai_probability < 30 %}bg-success-subtle text-success-emphasis
+{% elif ai_probability < 60 %}bg-warning-subtle text-warning-emphasis
+{% else %}bg-danger-subtle text-danger-emphasis{% endif %}">
+{% if ai_probability < 30 %}Low signal{% elif ai_probability < 60 %}Elevated{% else %}High signal{% endif %}
+</span>
+<p class="display-6 fw-bold mb-0 mt-2">{{ ai_probability }}%</p>
+</div>
+</div>
+<div class="progress progress-app mt-3">
+<div class="progress-bar progress-bar-app bg-gradient" style="--p: {{ ai_probability }}%; background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);"></div>
+</div>
+</div>
+
+{% if matches %}
+
+<div class="app-card overflow-hidden mb-4">
+<div class="table-responsive">
+<table class="table app-table table-hover align-middle mb-0">
+<thead class="table-light">
+<tr>
+<th scope="col" class="text-center" style="width:3rem">#</th>
+<th scope="col">Stored file</th>
+<th scope="col">Submitted</th>
+<th scope="col" class="text-end">Text match</th>
+<th scope="col" class="text-end">Code match</th>
+</tr>
+</thead>
+<tbody>
+{% for m in matches %}
+<tr>
+<td class="text-center text-muted">{{ loop.index }}</td>
+<td class="fw-medium">{{ m.filename }}</td>
+<td class="text-muted small">{{ m.timestamp }}</td>
+<td class="text-end" style="min-width: 11rem;">
+<div class="fw-semibold mb-1">{{ m.text_score }}%</div>
+<div class="progress progress-app">
+<div class="progress-bar progress-bar-app progress-bar-app-slow bg-danger" style="--p: {{ m.text_score }}%;"></div>
+</div>
+</td>
+<td class="text-end" style="min-width: 11rem;">
+<div class="fw-semibold mb-1">{{ m.code_score }}%</div>
+<div class="progress progress-app">
+<div class="progress-bar progress-bar-app progress-bar-app-slow bg-warning" style="--p: {{ m.code_score }}%;"></div>
+</div>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+
+{% else %}
+
+<div class="app-card app-card-pad mb-4">
+<p class="text-muted mb-0">
+<i class="bi bi-inbox me-2"></i>
+No previous submissions in the database to compare against. Your file has been stored for future checks.
+</p>
+</div>
+
+{% endif %}

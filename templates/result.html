@@ -1,0 +1,12 @@
+{% extends "base_app.html" %}
+{% block title %}Analysis{% endblock %}
+{% block content %}
+<h1 class="app-page-title">Analysis report</h1>
+<p class="app-page-sub">Similarity matches against your archive and AI-style heuristics for this upload.</p>
+{% include "partials/report_body.html" %}
+<div class="d-flex flex-wrap gap-2 mt-4">
+<a href="{{ url_for('dashboard') }}" class="btn btn-app-primary"><i class="bi bi-arrow-left me-2"></i>Dashboard</a>
+<a href="{{ url_for('results') }}" class="btn btn-app-outline"><i class="bi bi-graph-up-arrow me-2"></i>Results hub</a>
+</div>
+<p class="text-muted small mt-3 mb-0">This report is saved to <strong>Results</strong> until you run another check.</p>
+{% endblock %}
