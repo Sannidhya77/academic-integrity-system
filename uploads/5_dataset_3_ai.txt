@@ -1,5 +1,0 @@
-Artificial intelligence refers to the simulation of human intelligence in machines.
-
-It is used in various industries such as healthcare, finance, and robotics. AI systems can analyze data, learn patterns, and make decisions.
-
-Machine learning is a key subset of artificial intelligence.

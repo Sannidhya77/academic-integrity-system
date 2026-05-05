@@ -1,5 +1,0 @@
-Cloud computing is a technology that enables users to access computing resources over the internet.
-
-It allows businesses to scale their infrastructure without investing in physical hardware. Cloud services provide flexibility, cost efficiency, and high availability.
-
-Major providers include Amazon Web Services, Microsoft Azure, and Google Cloud Platform.
